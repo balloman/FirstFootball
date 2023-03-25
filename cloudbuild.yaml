@@ -1,0 +1,11 @@
+steps:
+  - name: 'mcr.microsoft.com/dotnet/sdk'
+    entrypoint: 'bash'
+    args: [ '-c', 'dotnet test Backend/Backend.sln' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: [ '-c', 'docker build -t us-central1-docker.pkg.dev/first-football-vods/docker/backend:$SHORT_SHA Backend/.' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'us-central1-docker.pkg.dev/first-football-vods/docker/backend:$SHORT_SHA' ]
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['beta', 'run', 'deploy', 'monolith', '--region=us-central1', '--platform=managed', '--image=us-central1-docker.pkg.dev/first-football-vods/docker/backend:$SHORT_SHA']
