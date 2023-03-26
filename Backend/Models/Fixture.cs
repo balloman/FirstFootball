@@ -7,7 +7,9 @@ public class Fixture
 {
     public required string Id { get; set; }
     public required Team HomeTeam { get; set; }
+    public string? HomeTeamName { get; set; }
     public required Team AwayTeam { get; set; }
+    public string? AwayTeamName { get; set; }
     public required int HomeScore { get; set; }
     public required int AwayScore { get; set; }
     public required int MatchWeek { get; set; }
@@ -20,7 +22,7 @@ public class Fixture
 
     private sealed class IdEqualityComparer : IEqualityComparer<Fixture>
     {
-        public bool Equals(Fixture x, Fixture y)
+        public bool Equals(Fixture? x, Fixture? y)
         {
             if (ReferenceEquals(x, y)) return true;
             if (ReferenceEquals(x, null)) return false;
