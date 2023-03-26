@@ -18,7 +18,7 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7.0.0
-      - run: pnpm ci && pnpm build
+      - run: cd first-football-web && pnpm ci && pnpm build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
