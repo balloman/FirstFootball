@@ -8,7 +8,11 @@ import {
   Paper,
   Transition,
   rem,
-  Text
+  Text,
+  Image,
+  Modal,
+  Title,
+  Center
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -18,6 +22,7 @@ const useStyles = createStyles((theme) => ({
   root: {
     position: "relative",
     zIndex: 1,
+    backgroundColor: "#B84545"
   },
 
   dropdown: {
@@ -89,6 +94,7 @@ interface MyHeaderProps {
 
 export function MyHeader({ links }: MyHeaderProps) {
   const [opened, { toggle, close }] = useDisclosure(false);
+  const [modalOpened, { toggle: toggleModal, close: closeModal }] = useDisclosure(false);
   const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
 
@@ -99,7 +105,7 @@ export function MyHeader({ links }: MyHeaderProps) {
       className={cx(classes.link, { [classes.linkActive]: active === link.link })}
       onClick={(event) => {
         event.preventDefault();
-        setActive(link.link);
+        toggleModal();
         close();
       }}
     >
@@ -108,24 +114,31 @@ export function MyHeader({ links }: MyHeaderProps) {
   ));
 
   return (
-    <Header height={HEADER_HEIGHT} mb={120} className={classes.root}>
-      <Container className={classes.header}>
-        {/* <img size={28} /> */}
-        <Text>FirstFootball Vods</Text>
-        <Group spacing={5} className={classes.links}>
-          {items}
-        </Group>
+    <>
+      <Modal opened={modalOpened} onClose={closeModal} title="About" centered size={"lg"} padding={"lg"}>
+        <Center>
+          <Title order={4}>Built by Bernard Allotey during a hackathon with ❤️</Title>
+        </Center>
+      </Modal>
+      <Header height={HEADER_HEIGHT} className={classes.root}>
+        <Container className={classes.header}>
+          <Image src="/logo.png" fit="contain" alt="FirstFootball Vods" width={100} height={100} />
+          <Text>FirstFootball Vods</Text>
+          <Group spacing={5} className={classes.links}>
+            {items}
+          </Group>
 
-        <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
+          <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
 
-        <Transition transition="pop-top-right" duration={200} mounted={opened}>
-          {(styles) => (
-            <Paper className={classes.dropdown} withBorder style={styles}>
-              {items}
-            </Paper>
-          )}
-        </Transition>
-      </Container>
-    </Header>
+          <Transition transition="pop-top-right" duration={200} mounted={opened}>
+            {(styles) => (
+              <Paper className={classes.dropdown} withBorder style={styles}>
+                {items}
+              </Paper>
+            )}
+          </Transition>
+        </Container>
+      </Header>
+    </>
   );
 }
