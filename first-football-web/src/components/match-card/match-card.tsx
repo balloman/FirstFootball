@@ -12,7 +12,15 @@ export const MatchCard = (props: MatchCardProps) => {
     <Card shadow={"sm"} padding={"xs"} radius={"md"} withBorder>
       <Card.Section>
         <Center>
-          <iframe width="100%" style={{aspectRatio: 1.77}} src={`https://www.youtube.com/embed/${fixture.id}?controls=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/>
+          {/* eslint-disable-next-line react/no-unknown-property */}
+          <iframe 
+            width="100%" 
+            style={{aspectRatio: 1.77}} 
+            src={`https://www.youtube.com/embed/${fixture.id}?controls=1&modestbranding=1&iv_load_policy=3`} 
+            title="YouTube video player" 
+            frameBorder="0" 
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowFullScreen />
         </Center>
       </Card.Section>
       <Grid columns={11}>

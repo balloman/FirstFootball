@@ -9,7 +9,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppShell header={
-        <MyHeader links={[{label: "About", link: "/about"}]} />
+        <MyHeader links={[{label: "About", link: "/about"}, {label: "Me", link: "https://github.com/balloman"}]} />
       }>
         <MatchList />
       </AppShell>

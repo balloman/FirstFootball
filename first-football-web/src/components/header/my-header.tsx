@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-const HEADER_HEIGHT = rem(60);
+const HEADER_HEIGHT = rem(100);
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -102,10 +102,15 @@ export function MyHeader({ links }: MyHeaderProps) {
     <a
       key={link.label}
       href={link.link}
-      className={cx(classes.link, { [classes.linkActive]: active === link.link })}
+      className={cx(classes.link)}
       onClick={(event) => {
+        if (link.link.startsWith("http")) {
+          return;
+        }
         event.preventDefault();
-        toggleModal();
+        if (link.link === "/about"){
+          toggleModal();
+        }
         close();
       }}
     >
@@ -115,15 +120,15 @@ export function MyHeader({ links }: MyHeaderProps) {
 
   return (
     <>
-      <Modal opened={modalOpened} onClose={closeModal} title="About" centered size={"lg"} padding={"lg"}>
+      <Modal opened={modalOpened} onClose={closeModal} title="About" centered size={"md"} padding={"lg"}>
         <Center>
           <Title order={4}>Built by Bernard Allotey during a hackathon with ❤️</Title>
         </Center>
       </Modal>
-      <Header height={HEADER_HEIGHT} className={classes.root}>
+      <Header height={100} className={classes.root}>
         <Container className={classes.header}>
-          <Image src="/logo.png" fit="contain" alt="FirstFootball Vods" width={100} height={100} />
-          <Text>FirstFootball Vods</Text>
+          <Image src="/logo.png" fit="contain" alt="FirstFootball Vods" height={100} width={100} />
+          <Title order={4}>FirstFootball Vods | Bernard Allotey</Title>
           <Group spacing={5} className={classes.links}>
             {items}
           </Group>
