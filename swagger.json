@@ -109,7 +109,7 @@
           "datePosted": {
             "type": "string",
             "format": "date-time",
-            "example": "2023-03-26T14:30:58.274267Z"
+            "example": "2023-03-26T14:43:22.771634Z"
           }
         },
         "additionalProperties": false

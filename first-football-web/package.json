@@ -13,6 +13,9 @@
     "codegen": "openapi --input ../swagger.json --output src/codegen --useUnionTypes --useOptions --indent 2"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@mantine/core": "^6.0.4",
+    "@mantine/hooks": "^6.0.4",
     "@tanstack/react-query": "^4.28.0",
     "ky": "^0.33.3",
     "query-string": "^8.1.0",
