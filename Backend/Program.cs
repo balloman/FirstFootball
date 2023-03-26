@@ -3,8 +3,10 @@ using FirstFootball.Backend.Configuration;
 using FirstFootball.Backend.Features;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using MicroElements.Swashbuckle.NodaTime;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using Polly;
@@ -33,20 +35,33 @@ builder.Services
     .AddHttpClient(Constants.CLIENT_NAME)
     .AddTransientHttpErrorPolicy(policy => policy.WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 3)));
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.SerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FirstFootball.Backend", Version = "v1"
+    });
+    c.ConfigureForNodaTimeWithSystemTextJson();
+});
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
+builder.Services.AddCors(options => options.AddDefaultPolicy(b =>
+{
+    b.AllowAnyOrigin();
+    b.AllowAnyHeader();
+    b.AllowAnyMethod();
+}));
 
 var app = builder.Build();
 
+app.UseCors();
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/fixtures", GetFixtures.HandleAsync).WithName("GetFixtures").WithOpenApi();
-app.MapPost("/fixtures", UpdateFixtures.HandleAsync);
-//
+app.MapPost("/fixtures", UpdateFixtures.HandleAsync).ExcludeFromDescription();
 // if (!app.Environment.IsProduction()) app.Run();
 var url = $"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT") ?? "8080"}";
 app.Run();

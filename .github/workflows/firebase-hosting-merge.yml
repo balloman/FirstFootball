@@ -22,7 +22,8 @@ jobs:
         with:
           node-version: '19'
           cache: 'pnpm'
-      - run: cd first-football-web && pnpm install && pnpm build
+          cache-dependency-path: 'first-football-web/pnpm-lock.yaml'
+      - run: cd first-football-web && pnpm --frozen-lockfile install && pnpm build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

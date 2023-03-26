@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "FirstFootball.Backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-    "version": "1.0"
+    "title": "FirstFootball.Backend",
+    "version": "v1"
   },
   "paths": {
     "/": {
@@ -68,16 +68,6 @@
             "description": "Bad Request"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "UpdateFixtures"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
       }
     }
   },
@@ -117,13 +107,11 @@
             "format": "int32"
           },
           "datePosted": {
-            "$ref": "#/components/schemas/Instant"
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-03-26T14:30:58.274267Z"
           }
         },
-        "additionalProperties": false
-      },
-      "Instant": {
-        "type": "object",
         "additionalProperties": false
       },
       "Team": {

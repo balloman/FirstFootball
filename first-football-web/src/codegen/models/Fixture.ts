@@ -2,7 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { Instant } from './Instant';
 import type { Team } from './Team';
 
 export type Fixture = {
@@ -14,6 +13,6 @@ export type Fixture = {
   homeScore?: number;
   awayScore?: number;
   matchWeek?: number;
-  datePosted?: Instant;
+  datePosted?: string;
 };
 
