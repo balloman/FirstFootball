@@ -7,4 +7,5 @@ public class YoutubeConfig
     public required string ApiKey { get; set; }
     public required string PlaylistId { get; set; }
     public required string LiveScoreApiKey { get; set; }
+    public required string ServiceAccountUid { get; set; }
 }

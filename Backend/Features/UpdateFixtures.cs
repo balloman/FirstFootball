@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using FirstFootball.Backend.Configuration;
@@ -16,8 +17,9 @@ public class UpdateFixtures
 {
     public static async Task<IResult> HandleAsync(IDbContextFactory<BackendContext> dbContextFactory, YouTubeService service, 
                                                   IOptions<YoutubeConfig> config, IHttpClientFactory clientFactory,
-                                                  ILogger<UpdateFixtures> logger)
+                                                  ILogger<UpdateFixtures> logger, ClaimsPrincipal user)
     {
+        if (!user.HasClaim("azp", config.Value.ServiceAccountUid)) return Results.Forbid();
         var client = clientFactory.CreateClient(Constants.CLIENT_NAME);
         var liveScoreResponse = await GetPremierLeagueFixtures(client, config.Value.LiveScoreApiKey);
         var parts = new[] { "snippet", "contentDetails" };
@@ -156,6 +158,7 @@ public class UpdateFixtures
 
     private record LiveScoreResponse(int Status, LiveScoreFixture[] Data);
 
+    // ReSharper disable NotAccessedPositionalProperty.Local
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     private record LiveScoreFixture(string Round, string MatchId, string Status, LiveScoreTeam Team_2, LiveScoreTeam Team_1,
                                     LiveScoreScoreContainer Score, string RoundInfo);

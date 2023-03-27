@@ -5,25 +5,6 @@
     "version": "v1"
   },
   "paths": {
-    "/": {
-      "get": {
-        "tags": [
-          "FirstFootball.Backend, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/fixtures": {
       "get": {
         "tags": [
@@ -109,7 +90,7 @@
           "datePosted": {
             "type": "string",
             "format": "date-time",
-            "example": "2023-03-26T14:43:22.771634Z"
+            "example": "2023-03-27T03:48:14.946081Z"
           }
         },
         "additionalProperties": false

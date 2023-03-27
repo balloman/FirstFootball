@@ -4,8 +4,10 @@ using FirstFootball.Backend.Features;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using MicroElements.Swashbuckle.NodaTime;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
@@ -55,15 +57,28 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(b =>
     b.AllowAnyHeader();
     b.AllowAnyMethod();
 }));
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MetadataAddress = "https://accounts.google.com/.well-known/openid-configuration";
+        options.Audience = "backend";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            ValidateLifetime = true
+        };
+    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 app.UseCors();
-app.MapGet("/", () => "Hello World!");
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapGet("/fixtures", GetFixtures.HandleAsync).WithName("GetFixtures").WithOpenApi();
-app.MapPost("/fixtures", UpdateFixtures.HandleAsync).ExcludeFromDescription();
-// if (!app.Environment.IsProduction()) app.Run();
-var url = $"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT") ?? "8080"}";
+app.MapPost("/fixtures", UpdateFixtures.HandleAsync).RequireAuthorization().ExcludeFromDescription();
 app.Run();
 
 
