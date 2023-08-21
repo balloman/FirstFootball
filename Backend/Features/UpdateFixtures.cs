@@ -17,9 +17,13 @@ public class UpdateFixtures
 {
     public static async Task<IResult> HandleAsync(IDbContextFactory<BackendContext> dbContextFactory, YouTubeService service, 
                                                   IOptions<YoutubeConfig> config, IHttpClientFactory clientFactory,
-                                                  ILogger<UpdateFixtures> logger, ClaimsPrincipal user)
+                                                  ILogger<UpdateFixtures> logger, ClaimsPrincipal user, 
+                                                  IWebHostEnvironment env)
     {
-        if (!user.HasClaim("azp", config.Value.ServiceAccountUid)) return Results.Forbid();
+        if (env.IsProduction())
+        {
+            if (!user.HasClaim("azp", config.Value.ServiceAccountUid)) return Results.Forbid();
+        }
         var client = clientFactory.CreateClient(Constants.CLIENT_NAME);
         var liveScoreResponse = await GetPremierLeagueFixtures(client, config.Value.LiveScoreApiKey);
         var parts = new[] { "snippet", "contentDetails" };
@@ -49,6 +53,7 @@ public class UpdateFixtures
         var correctTeams = await GetExistingTeams(teamsContext, teams);
         // Update the teams
         UpdateTeamsWithFixtures(correctTeams, fixtures);
+        await teamsContext.SaveChangesAsync();
         await using var finalContext = await dbContextFactory.CreateDbContextAsync();
         finalContext.AttachRange(correctTeams);
         var existingFixtures = await finalContext.Fixtures

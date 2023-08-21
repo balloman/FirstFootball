@@ -57,28 +57,39 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(b =>
     b.AllowAnyHeader();
     b.AllowAnyMethod();
 }));
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.MetadataAddress = "https://accounts.google.com/.well-known/openid-configuration";
-        options.Audience = "backend";
-        options.TokenValidationParameters = new TokenValidationParameters
+if (builder.Environment.IsProduction())
+{
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
         {
-            ValidateIssuer = true,
-            ValidateAudience = false,
-            ValidateLifetime = true
-        };
-    });
-builder.Services.AddAuthorization();
+            options.MetadataAddress = "https://accounts.google.com/.well-known/openid-configuration";
+            options.Audience = "backend";
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidateLifetime = true
+            };
+        });
+    builder.Services.AddAuthorization();
+}
+
 
 var app = builder.Build();
 
 app.UseCors();
-app.UseAuthentication();
-app.UseAuthorization();
+if (app.Environment.IsProduction())
+{
+    app.UseAuthentication();
+    app.UseAuthorization();
+}
 app.MapGet("/fixtures", GetFixtures.HandleAsync).WithName("GetFixtures").WithOpenApi();
-app.MapPost("/fixtures", UpdateFixtures.HandleAsync).RequireAuthorization().ExcludeFromDescription();
+var updateFixturesEndpoint = app.MapPost("/fixtures", UpdateFixtures.HandleAsync).ExcludeFromDescription();
+if (app.Environment.IsProduction())
+{
+    updateFixturesEndpoint.RequireAuthorization();
+}
 app.Run();
 
 
